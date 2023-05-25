@@ -1,7 +1,7 @@
 const axios = require("axios");
 const { expect } = require("chai");
 const envVariables = require("../../config/env.json");
-const { saveAccessToken } = require("../../utils/helper");
+const { saveAccessToken, saveRefreshToken } = require("../../utils/helper");
 const authPayload = require("../../fixtures/auth-data.json");
 
 describe("Authenticate user", async () =>  {
@@ -11,9 +11,6 @@ describe("Authenticate user", async () =>  {
 
     // make api call using axios
     const response = axios.post(url, authPayload);
-
-    // store access store
-    saveAccessToken(response);
 
     it("should contain expected keys such as accessToken, tokenType, emailVerified and refreshToken", async () => {
         const res = await response;
@@ -38,5 +35,17 @@ describe("Authenticate user", async () =>  {
     it("should verify authenticated user email is verified", async () => {
         const res = await response;
         expect(res.data.emailVerified).equal(true);
+    });
+
+    it("should save access token if it exist in the environment variable", async () => {
+        // store access token
+        const res = await saveAccessToken(response);
+        expect(res).equal(true);
+    });
+
+    it("should save refresh token if it exist in the environment variable", async () => {
+        // store refresh token
+        const res = await saveRefreshToken(response);
+        expect(res).equal(true);
     });
 })

@@ -6,9 +6,24 @@ async function saveAccessToken (response) {
     if (res.data.accessToken) {
         envVariables.accessToken = res.data.accessToken;
         fs.writeFileSync("config/env.json", JSON.stringify(envVariables));
+        return true;
+    } else {
+        return false;
+    }
+}
+
+async function saveRefreshToken (response) {
+    const res = await response;
+    if (res.data.refreshToken) {
+        envVariables.refreshToken = res.data.refreshToken;
+        fs.writeFileSync("config/env.json", JSON.stringify(envVariables));
+        return true;
+    } else {
+        return false;
     }
 }
 
 module.exports  = {
-    saveAccessToken
+    saveAccessToken,
+    saveRefreshToken
 }
